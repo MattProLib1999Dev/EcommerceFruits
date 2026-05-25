@@ -1,6 +1,5 @@
 import { useSearchParams, Link } from "react-router-dom";
 import { useMemo } from "react";
-import "../home-page/vetrina.css"; // Importiamo il nostro CSS personalizzato
 import { Product } from "../../models/Product";
 
 export const ListProduct: Product[] = [
@@ -13,22 +12,27 @@ export const ListProduct: Product[] = [
   { nome: "Arancia", prezzo: 1.5, descrizione: "Arancia rossa di Sicilia" },
   { nome: "Uva", prezzo: 2.8, descrizione: "Uva bianca senza semi" },
   { nome: "Mango", prezzo: 4.5, descrizione: "Mango esotico dolcissimo" },
-  { nome: "Ciliegia", prezzo: 5.0, descrizione: "Ciliegie ferrovia croccanti" }
+  { nome: "Ciliegia", prezzo: 5.0, descrizione: "Ciliegie ferrovia croccanti" },
 ];
 
 export function ProductCard({ item, index }: { item: Product; index: number }) {
   return (
-    <div className="custom-card">
-      <div className="card-image">
-        <img
-          src={`https://loremflickr.com/400/300/${item.nome.toLowerCase()}?lock=${index}`}
-          alt={item.nome}
-        />
-      </div>
-      <div className="card-content">
-        <h3>{item.nome}</h3>
-        <p className="description">{item.descrizione}</p>
-        <p className="price">€{item.prezzo.toFixed(2)}</p>
+    <div className="row">
+      <div className="col">
+        <div className="card" style={{ width: "18rem" }}>
+          <img
+            src={`https://loremflickr.com/400/300/${item.nome.toLowerCase()}?lock=${index}`}
+            className="card-img-top"
+            alt={item.nome}
+          />
+          <div className="card-body">
+            {" "}
+            {}
+            <h3 className="card-title h5">{item.nome}</h3>
+            <p className="card-text text-muted">{item.descrizione}</p>
+            <p className="card-text fw-bold">€{item.prezzo.toFixed(2)}</p>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -37,51 +41,63 @@ export function ProductCard({ item, index }: { item: Product; index: number }) {
 export function DisplayProduct({ product }: { product: Product[] }) {
   const [searchParams] = useSearchParams();
   const currentPage = parseInt(searchParams.get("page") || "1");
-  const elementiPerPagina = 5;
+  const elementiPerPagina = 6; // Consiglio 6 (o multipli di 3) così si incolonnano perfettamente su 3 colonne!
 
   const totalPages = Math.ceil(product.length / elementiPerPagina);
-  
+
   const prodottiVisibili = useMemo(() => {
     const start = (currentPage - 1) * elementiPerPagina;
     return product.slice(start, start + elementiPerPagina);
   }, [product, currentPage]);
 
   return (
-    <div className="shop-container">
-      <h2 className="shop-title">Prodotti freschi selezionati</h2>
-      
-      <div className="product-grid">
+    // container: centra la pagina e dà i margini corretti ai lati
+    <div className="container my-5">
+      <h2 className="mb-4 text-center text-success fw-bold">Prodotti freschi selezionati</h2>
+
+      {/* Sostituito "product-grid" con Flexbox di Bootstrap per affiancare le card */}
+      <div className="d-flex flex-wrap gap-4 justify-content-center mb-5">
         {prodottiVisibili.map((item, index) => (
           <ProductCard key={item.nome} item={item} index={index} />
         ))}
       </div>
 
-      <nav className="custom-pagination">
-        <Link 
-          to={`?page=${currentPage - 1}`} 
-          className={`nav-btn ${currentPage <= 1 ? "disabled" : ""}`}
-        >
-          &laquo; Precedente
-        </Link>
-
-        <div className="page-numbers">
-          {Array.from({ length: totalPages }, (_, i) => (
-            <Link 
-              key={i + 1} 
-              to={`?page=${i + 1}`} 
-              className={`page-num ${currentPage === i + 1 ? "active" : ""}`}
+      {/* Paginazione trasformata con i componenti standard di Bootstrap */}
+      <nav aria-label="Page navigation">
+        <ul className="pagination justify-content-center">
+          
+          {/* Pulsante Precedente */}
+          <li className={`page-item ${currentPage <= 1 ? "disabled" : ""}`}>
+            <Link
+              to={`?page=${currentPage - 1}`}
+              className="page-link"
+              tabIndex={currentPage <= 1 ? -1 : 0}
             >
-              {i + 1}
+              &laquo; Precedente
             </Link>
-          ))}
-        </div>
+          </li>
 
-        <Link 
-          to={`?page=${currentPage + 1}`} 
-          className={`nav-btn ${currentPage >= totalPages ? "disabled" : ""}`}
-        >
-          Successivo &raquo;
-        </Link>
+          {/* Numeri delle pagine */}
+          {Array.from({ length: totalPages }, (_, i) => (
+            <li key={i + 1} className={`page-item ${currentPage === i + 1 ? "active" : ""}`}>
+              <Link to={`?page=${i + 1}`} className="page-link">
+                {i + 1}
+              </Link>
+            </li>
+          ))}
+
+          {/* Pulsante Successivo */}
+          <li className={`page-item ${currentPage >= totalPages ? "disabled" : ""}`}>
+            <Link
+              to={`?page=${currentPage + 1}`}
+              className="page-link"
+              tabIndex={currentPage >= totalPages ? -1 : 0}
+            >
+              Successivo &raquo;
+            </Link>
+          </li>
+
+        </ul>
       </nav>
     </div>
   );

@@ -23,7 +23,7 @@ export default function Home() {
         <section className="text-center">
           <h3 className="mb-4 text-secondary">🌟 Prodotto del giorno</h3>
           <div className="d-flex justify-content-center">
-            <div style={{ maxWidth: "300px", width: "100%" }}>
+            <div style={{ maxWidth: "300px", width: "300px" }}>
               {/* Riutilizziamo la card che hai già creato! */}
               <ProductCard item={prodottoDelGiorno} index={99} />
             </div>
