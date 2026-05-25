@@ -3,100 +3,193 @@ import { useMemo } from "react";
 import { Product } from "../../models/Product";
 
 export const ListProduct: Product[] = [
-  { nome: "Mela", prezzo: 0.4, descrizione: "Mela melinda gialla" },
-  { nome: "Pera", prezzo: 0.8, descrizione: "Pera williams gialla" },
-  { nome: "Ananas", prezzo: 6.0, descrizione: "Ananas giallo grande" },
-  { nome: "Banana", prezzo: 1.0, descrizione: "Banana chiquita matura" },
-  { nome: "Fragola", prezzo: 3.5, descrizione: "Fragole fresche di bosco" },
-  { nome: "Kiwi", prezzo: 1.2, descrizione: "Kiwi verde maturazione naturale" },
-  { nome: "Arancia", prezzo: 1.5, descrizione: "Arancia rossa di Sicilia" },
-  { nome: "Uva", prezzo: 2.8, descrizione: "Uva bianca senza semi" },
-  { nome: "Mango", prezzo: 4.5, descrizione: "Mango esotico dolcissimo" },
-  { nome: "Ciliegia", prezzo: 5.0, descrizione: "Ciliegie ferrovia croccanti" },
+  {
+    nome: "Mela",
+    prezzo: 0.4,
+    descrizione: "Mela melinda gialla",
+    image:
+      "https://images.unsplash.com/photo-1567306226416-28f0efdc88ce?q=80&w=800&auto=format&fit=crop",
+  },
+  {
+    nome: "Pera",
+    prezzo: 0.8,
+    descrizione: "Pera williams gialla",
+    image:
+      "https://images.unsplash.com/photo-1514756331096-242fdeb70d4a?q=80&w=800&auto=format&fit=crop",
+  },
+  {
+    nome: "Ananas",
+    prezzo: 6.0,
+    descrizione: "Ananas giallo grande",
+    image:
+      "https://images.unsplash.com/photo-1589820296156-2454bb8a6ad1?q=80&w=800&auto=format&fit=crop",
+  },
+  {
+  nome: "Banana",
+  prezzo: 1.0,
+  descrizione: "Banana dolce e matura",
+  image:
+    "https://images.unsplash.com/photo-1528825871115-3581a5387919?q=80&w=800&auto=format&fit=crop",
+},
+  {
+    nome: "Fragola",
+    prezzo: 3.5,
+    descrizione: "Fragole fresche di bosco",
+    image:
+      "https://images.unsplash.com/photo-1464965911861-746a04b4bca6?q=80&w=800&auto=format&fit=crop",
+  },
+  {
+    nome: "Kiwi",
+    prezzo: 1.2,
+    descrizione: "Kiwi verde maturazione naturale",
+    image:
+      "https://images.unsplash.com/photo-1585059895524-72359e06133a?q=80&w=800&auto=format&fit=crop",
+  },
+  {
+    nome: "Arancia",
+    prezzo: 1.5,
+    descrizione: "Arancia rossa di Sicilia",
+    image:
+      "https://images.unsplash.com/photo-1611080626919-7cf5a9dbab5b?q=80&w=800&auto=format&fit=crop",
+  },
+  {
+    nome: "Uva",
+    prezzo: 2.8,
+    descrizione: "Uva bianca senza semi",
+    image:
+      "https://images.unsplash.com/photo-1537640538966-79f369143f8f?q=80&w=800&auto=format&fit=crop",
+  },
+  {
+    nome: "Mango",
+    prezzo: 4.5,
+    descrizione: "Mango esotico dolcissimo",
+    image:
+      "https://images.unsplash.com/photo-1553279768-865429fa0078?q=80&w=800&auto=format&fit=crop",
+  },
+  {
+    nome: "Ciliegia",
+    prezzo: 5.0,
+    descrizione: "Ciliegie ferrovia croccanti",
+    image:
+      "https://images.unsplash.com/photo-1528825871115-3581a5387919?q=80&w=800&auto=format&fit=crop",
+  },
 ];
 
-export function ProductCard({ item, index }: { item: Product; index: number }) {
+export function ProductCard({ item }: { item: Product }) {
   return (
-    <div className="row">
-      <div className="col">
-        <div className="card" style={{ width: "18rem" }}>
-          <img
-            src={`https://loremflickr.com/400/300/${item.nome.toLowerCase()}?lock=${index}`}
-            className="card-img-top"
-            alt={item.nome}
-          />
-          <div className="card-body">
-            {" "}
-            {}
-            <h3 className="card-title h5">{item.nome}</h3>
-            <p className="card-text text-muted">{item.descrizione}</p>
-            <p className="card-text fw-bold">€{item.prezzo.toFixed(2)}</p>
-          </div>
-        </div>
+    <div className="card h-100 shadow-sm border-0">
+      <img
+        className="card-img-top"
+        src={item.image}
+        alt={item.nome}
+        style={{ height: "220px", objectFit: "cover" }}
+      />
+
+      <div className="card-body">
+        <h3 className="h5 fw-bold">{item.nome}</h3>
+        <p className="text-muted">{item.descrizione}</p>
+        <p className="fw-bold text-success">
+          €{item.prezzo.toFixed(2)}
+        </p>
       </div>
     </div>
   );
 }
 
-export function DisplayProduct({ product }: { product: Product[] }) {
+export function DisplayProduct({
+  product,
+}: {
+  product: Product[];
+}) {
   const [searchParams] = useSearchParams();
-  const currentPage = parseInt(searchParams.get("page") || "1");
-  const elementiPerPagina = 6; // Consiglio 6 (o multipli di 3) così si incolonnano perfettamente su 3 colonne!
 
-  const totalPages = Math.ceil(product.length / elementiPerPagina);
+  const currentPage = parseInt(
+    searchParams.get("page") || "1"
+  );
+
+  const elementiPerPagina = 6;
+
+  const totalPages = Math.ceil(
+    product.length / elementiPerPagina
+  );
 
   const prodottiVisibili = useMemo(() => {
-    const start = (currentPage - 1) * elementiPerPagina;
-    return product.slice(start, start + elementiPerPagina);
+    const start =
+      (currentPage - 1) * elementiPerPagina;
+
+    return product.slice(
+      start,
+      start + elementiPerPagina
+    );
   }, [product, currentPage]);
 
   return (
-    // container: centra la pagina e dà i margini corretti ai lati
-    <div className="container my-5">
-      <h2 className="mb-4 text-center text-success fw-bold">Prodotti freschi selezionati</h2>
+    <div className="container py-5">
+      <h2 className="text-center fw-bold text-success mb-5">
+        Prodotti freschi selezionati
+      </h2>
 
-      {/* Sostituito "product-grid" con Flexbox di Bootstrap per affiancare le card */}
-      <div className="d-flex flex-wrap gap-4 justify-content-center mb-5">
-        {prodottiVisibili.map((item, index) => (
-          <ProductCard key={item.nome} item={item} index={index} />
+      <div className="row justify-content-center">
+        {prodottiVisibili.map((item) => (
+          <ProductCard
+            key={item.nome}
+            item={item}
+          />
         ))}
       </div>
 
-      {/* Paginazione trasformata con i componenti standard di Bootstrap */}
-      <nav aria-label="Page navigation">
+      <nav className="mt-4">
         <ul className="pagination justify-content-center">
-          
-          {/* Pulsante Precedente */}
-          <li className={`page-item ${currentPage <= 1 ? "disabled" : ""}`}>
+          <li
+            className={`page-item ${
+              currentPage <= 1
+                ? "disabled"
+                : ""
+            }`}
+          >
             <Link
               to={`?page=${currentPage - 1}`}
               className="page-link"
-              tabIndex={currentPage <= 1 ? -1 : 0}
             >
               &laquo; Precedente
             </Link>
           </li>
 
-          {/* Numeri delle pagine */}
-          {Array.from({ length: totalPages }, (_, i) => (
-            <li key={i + 1} className={`page-item ${currentPage === i + 1 ? "active" : ""}`}>
-              <Link to={`?page=${i + 1}`} className="page-link">
-                {i + 1}
-              </Link>
-            </li>
-          ))}
+          {Array.from(
+            { length: totalPages },
+            (_, i) => (
+              <li
+                key={i + 1}
+                className={`page-item ${
+                  currentPage === i + 1
+                    ? "active"
+                    : ""
+                }`}
+              >
+                <Link
+                  to={`?page=${i + 1}`}
+                  className="page-link"
+                >
+                  {i + 1}
+                </Link>
+              </li>
+            )
+          )}
 
-          {/* Pulsante Successivo */}
-          <li className={`page-item ${currentPage >= totalPages ? "disabled" : ""}`}>
+          <li
+            className={`page-item ${
+              currentPage >= totalPages
+                ? "disabled"
+                : ""
+            }`}
+          >
             <Link
               to={`?page=${currentPage + 1}`}
               className="page-link"
-              tabIndex={currentPage >= totalPages ? -1 : 0}
             >
               Successivo &raquo;
             </Link>
           </li>
-
         </ul>
       </nav>
     </div>
